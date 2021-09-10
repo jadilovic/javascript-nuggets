@@ -1,3 +1,7 @@
+# Running different starter files
+
+This project has different starter files in index.js that need to be uncommented / changed in order to run different javascript nuggets in this React App.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
