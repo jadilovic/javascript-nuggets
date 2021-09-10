@@ -24,7 +24,7 @@ console.log(firstItem, secondItem);
 
 // Object destructuring
 const mark = {
-  first: 'bob',
+  first: 'mark',
   last: 'sanders',
   city: 'chicago',
   siblings: {
@@ -39,6 +39,15 @@ const {
   siblings: { sister },
 } = mark;
 
+const getPersonName = (personObjec) => {
+  const { first, last } = personObjec;
+  return `Full name: ${first}, ${last}`;
+};
+
+const getCitySiblings = ({ city, siblings: { sister } }) => {
+  return `City and simblings: ${city}, ${sister}`;
+};
+
 function Destructuring() {
   return (
     <div className="App">
@@ -48,11 +57,12 @@ function Destructuring() {
       {<p>{`${friends}`}</p>}
       <hr></hr>
       <h4>Object values:</h4>
-      {<p>{`${first}`}</p>}
+      {<p>{`${first}, ${last}, ${city}, ${sister} `}</p>}
       <p></p>
-      <h4>Total daily salary:</h4>
-      <p></p>
-      <h4>Total for all cart items:</h4>
+      <h4>Full name from person object:</h4>
+      <p>{`${getPersonName(mark)}`}</p>
+      <h4>City and siblings:</h4>
+      <p>{`${getCitySiblings(mark)}`}</p>
     </div>
   );
 }
