@@ -1,6 +1,37 @@
 import './App.css';
 // Optional Chaining
 
+const people = [
+  {
+    name: 'bob',
+    location: { street: '123 main street', timezone: { offset: '+7:00' } },
+  },
+  { name: 'peter', location: { street: '123 Pine street' } },
+  {
+    name: 'susan',
+    location: { street: '123 Apple street', timezone: { offset: '+9:00' } },
+  },
+];
+
+people.forEach((element) => {
+  console.log(element.name);
+  console.log(element.location.street);
+  console.log(
+    (element.location &&
+      element.location.timezone &&
+      element.location.timezone.offset) ||
+      'No value'
+  );
+});
+
+people.forEach((element) => {
+  console.log('Name: ' + element.name);
+  console.log('Street: ' + element.location.street);
+  console.log(
+    'Time zone offset: ' + element.location?.timezone?.offset || 'No value'
+  );
+});
+
 function OptionalChaining() {
   return (
     <div className="App">
