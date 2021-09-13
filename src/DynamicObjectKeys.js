@@ -1,8 +1,53 @@
-import './App.css';
+import TextField from '@material-ui/core/TextField';
+import React, { useState, useEffect } from 'react';
+import {
+  Button,
+  Paper,
+  Table,
+  TableContainer,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  makeStyles,
+} from '@material-ui/core';
+
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
+
 // Dynamicaly changing object keys by using square bracket notation
 
 function DynamicObjectKeys() {
-  const items = [{ name: 'aki', age: 22, 'school-uni': 'davenport' }];
+  const classes = useStyles();
+
+  const [keyValue, setKeyValue] = useState('');
+  const [stateValue, setStateValue] = useState('');
+
+  const state = {
+    loading: true,
+    name: '',
+    job: '',
+  };
+
+  const updateState = (key, value) => {
+    console.log('test update state');
+    state[key] = value;
+  };
+
+  const handleSubmit = () => {
+    updateState(keyValue, stateValue);
+  };
+
+  const handleReset = () => {
+    setKeyValue('');
+    setStateValue('');
+    console.log(state);
+  };
+
+  console.log(state);
 
   let appState = 'loading';
   // appState = 'error';
@@ -13,42 +58,25 @@ function DynamicObjectKeys() {
   app[keyName] = 'apple';
   console.log(app);
 
-  const state = {
-    loading: true,
-    name: '',
-    job: '',
-  };
-
-  const updateState = (key, value) => {
-    state[key] = value;
-  };
-
-  console.log(state);
-  updateState('name', 'peter');
-  console.log(state);
-  updateState('loading', false);
-  updateState('job', 'developer');
-  updateState('age', 33);
-  updateState('name', 'aki');
-  console.log(state);
-
   return (
-    <div className="App">
-      <h3>Javascript Nuggets - Dynamic Object Keys</h3>
-      <h4>Item values:</h4>
-      {items.map((item, index) => {
-        return (
-          <p
-            key={index}
-          >{`name: ${item.name} => age: ${item['age']} => school: ${item['school-uni']}`}</p>
-        );
-      })}
-      <hr></hr>
-      <h4>Key name values:</h4>
-      <p>{`${keyName}: ${app[keyName]}`}</p>
-      <h4>Key name updates:</h4>
-      <p>{`${state['name']}, ${state['age']}, ${state.age}, ${state.job}, ${state['loading']} `}</p>
-    </div>
+    <>
+      <Paper>
+        <h2>Form Demo</h2>
+
+        <TextField
+          onChange={(event) => setKeyValue(event.target.value)}
+          value={keyValue}
+          label={'Key Value'} //optional
+        />
+        <TextField
+          onChange={(event) => setStateValue(event.target.value)}
+          value={stateValue}
+          label={'State Value'} //optional
+        />
+        <Button onClick={handleSubmit}>Submit</Button>
+        <Button onClick={handleReset}>Reset</Button>
+      </Paper>
+    </>
   );
 }
 

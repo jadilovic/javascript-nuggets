@@ -17,14 +17,14 @@ import CallbackFunction from './CallbackFunction';
 */
 
 const NuggetsMenu = () => {
-  const [openMenu, setOpenMenu] = useState(null);
+  const [openMenu, setOpenMenu] = useState(false);
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     setOpenMenu(true);
   };
 
   const handleClose = () => {
-    setOpenMenu(null);
+    setOpenMenu(false);
   };
 
   return (
