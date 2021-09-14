@@ -40,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
 
 function SpreadOperator() {
   const classes = useStyles();
-  let [friends, setFriends] = useState([]);
-  let [newFriends, setNewFriends] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [newFriends, setNewFriends] = useState([]);
   const [person, setPerson] = useState({ name: 'john', job: 'developer' });
 
   const udemy = 'udemy';
@@ -92,7 +92,6 @@ function SpreadOperator() {
       <Button
         onClick={() => {
           setNewFriends([...guys]);
-          friends = newFriends;
         }}
         variant="outlined"
         color="primary"

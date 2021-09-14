@@ -19,22 +19,21 @@ const useStyles = makeStyles({
 });
 
 // Dynamicaly changing object keys by using square bracket notation
+// novi objekat
+// lista properties
+// ispisuj propertije na objekut u tabeli
 
 function DynamicObjectKeys() {
   const classes = useStyles();
 
   const [keyValue, setKeyValue] = useState('');
   const [stateValue, setStateValue] = useState('');
-
-  const state = {
-    loading: true,
-    name: '',
-    job: '',
-  };
+  const [dynamicObject, setDynamicObject] = useState({});
+  const [objectsArray, setObjectsArray] = useState([]);
 
   const updateState = (key, value) => {
-    console.log('test update state');
-    state[key] = value;
+    setDynamicObject({ ...dynamicObject, [key]: value });
+    handleReset();
   };
 
   const handleSubmit = () => {
@@ -44,22 +43,20 @@ function DynamicObjectKeys() {
   const handleReset = () => {
     setKeyValue('');
     setStateValue('');
-    console.log(state);
   };
 
-  console.log(state);
-
-  let appState = 'loading';
-  // appState = 'error';
-  const app = { [appState]: true };
-  console.log(app);
-
-  let keyName = 'computer';
-  app[keyName] = 'apple';
-  console.log(app);
+  const addObject = () => {
+    setObjectsArray([...objectsArray, dynamicObject]);
+    console.log(objectsArray, 'objects array');
+    setDynamicObject({});
+  };
 
   return (
     <>
+      {Object.keys(dynamicObject).map((key, index) => {
+        const value = dynamicObject[key];
+        return <p key={index}>{`${key}: ${value}`}</p>;
+      })}
       <Paper>
         <h2>Form Demo</h2>
 
@@ -75,7 +72,15 @@ function DynamicObjectKeys() {
         />
         <Button onClick={handleSubmit}>Submit</Button>
         <Button onClick={handleReset}>Reset</Button>
+        <Button onClick={addObject}>Add Object to Array</Button>
       </Paper>
+      {objectsArray.map((individualObject) => {
+        const list = Object.keys(individualObject).map((key, index) => {
+          const value = individualObject[key];
+          return <p key={index}>{`${key}: ${value}`}</p>;
+        });
+        return list;
+      })}
     </>
   );
 }

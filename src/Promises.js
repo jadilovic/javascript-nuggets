@@ -39,7 +39,7 @@ function Promises() {
   const [response, setResponse] = useState('');
   const num = 2;
 
-  const promise = new Promise((resolve, reject) => {
+  let promise = new Promise((resolve, reject) => {
     const randomNum = Math.floor(Math.random() * 3);
     console.log(randomNum);
     if (randomNum === 2) {

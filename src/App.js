@@ -11,6 +11,7 @@ import Destructuring from './Destructuring';
 import RestOperator from './RestOperator';
 import OptionalChaining from './OptionalChaining';
 import Promises from './Promises';
+import Phone from './Phone';
 /*
 import ArrayFrom from './ArrayFrom';
 import CallbackFunction from './CallbackFunction';
@@ -68,6 +69,9 @@ const NuggetsMenu = () => {
         <MenuItem onClick={handleClose}>
           <Link to="/promises">Promises</Link>
         </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/phone">Phone</Link>
+        </MenuItem>
       </Menu>
       <Route exact path="/">
         <Home />
@@ -98,6 +102,9 @@ const NuggetsMenu = () => {
       </Route>
       <Route path="/promises">
         <Promises />
+      </Route>
+      <Route path="/phone">
+        <Phone />
       </Route>
     </Router>
   );
