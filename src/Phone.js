@@ -8,6 +8,10 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
+// show character instantly
+// selected character while entering
+// make space first
+//
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,130 +29,126 @@ export default function AutoGrid() {
   const [inputValue, setInputValue] = useState('');
   const [countClicks, setCountClicks] = useState(0);
   const [upperCase, setUppersCase] = useState(false);
+  const [countCharacters, setCountCharacters] = useState(0);
+  const [previousValue, setPreviousValue] = useState('');
+  let inputValueLength = 0;
+  let tempInputValue = '';
+  let selectedCharacter = '';
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log('This will run after 1 second! countClicks: ' + countClicks);
+      setFinalInputValue();
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [countClicks]);
 
   const isLetter = (str) => {
     return str.length === 1 && str.match(/[a-z]/i);
   };
 
   const addInputValues = (value) => {
+    selectedCharacter = value;
     if (upperCase && isLetter(value)) {
-      value = value.toUpperCase();
+      selectedCharacter = value.toUpperCase();
     }
     if (value === '') {
-      const newStr = inputValue.substring(0, inputValue.length - 1);
-      setInputValue(newStr);
+      const newInputValueAfterDeletingOneCharacter = inputValue.substring(
+        0,
+        inputValue.length - 1
+      );
+      setInputValue(newInputValueAfterDeletingOneCharacter);
     } else {
-      setInputValue(inputValue + value);
+      if (inputValue.length === inputValueLength) {
+        setInputValue(inputValue + selectedCharacter);
+        console.log('first add');
+      } else {
+        tempInputValue = inputValue.slice(0, -1);
+        setInputValue(tempInputValue + selectedCharacter);
+        console.log('follow add');
+      }
     }
   };
 
-  const addOneOfFourValues = (...values) => {
-    setCountClicks(countClicks + 1);
-    if (countClicks === values.length + 1) {
-      setCountClicks(1);
+  const setFinalInputValue = (value) => {
+    if (value) {
+      selectedCharacter = value;
     }
-    const timer = setTimeout(() => {
-      switch (countClicks) {
-        case 0:
-          addInputValues(values[0]);
-          setCountClicks(0);
-          break;
-        case 1:
-          addInputValues(values[1]);
-          setCountClicks(0);
-          break;
-        case 2:
-          addInputValues(values[2]);
-          setCountClicks(0);
-          break;
-        case 3:
-          addInputValues(values[3]);
-          setCountClicks(0);
-          break;
-        case 4:
-          addInputValues(values[4]);
-          setCountClicks(0);
-          break;
-      }
-    }, 1500);
-    return () => clearTimeout(timer);
+    setInputValue(inputValue + selectedCharacter);
+    inputValueLength = inputValue.length;
+  };
+  // setState explore
+  // to know exactly when value is set
+  // do action when state is set
+  const addClickedValues = (...values) => {
+    setCountCharacters(countCharacters + 1);
+    setCountClicks(countClicks + 1);
+    if (countCharacters > values.length - 2 || previousValue !== values[0]) {
+      setCountCharacters(0);
+    }
+    setPreviousValue(values[0]);
+    switch (countCharacters) {
+      case 0:
+        addInputValues(values[0]);
+        break;
+      case 1:
+        addInputValues(values[1]);
+        break;
+      case 2:
+        addInputValues(values[2]);
+        break;
+      case 3:
+        addInputValues(values[3]);
+        break;
+      case 4:
+        addInputValues(values[4]);
+        break;
+    }
   };
 
-  const hashShift = (hash) => {
+  const hashtagAndShift = (hashtag) => {
+    setCountCharacters(countCharacters + 1);
     setCountClicks(countClicks + 1);
-    if (countClicks === 3) {
-      setCountClicks(1);
+    if (countCharacters >= 3) {
+      setCountCharacters(1);
     }
-    const timer = setTimeout(() => {
-      switch (countClicks) {
-        case 0:
-          {
-            addInputValues(hash);
-            setCountClicks(0);
+    switch (countCharacters) {
+      case 0:
+        {
+          addInputValues(hashtag);
+        }
+        break;
+      case 1:
+        {
+          if (upperCase) {
+            setUppersCase(false);
+          } else {
+            setUppersCase(true);
           }
-          break;
-        case 1:
-          {
-            if (upperCase) {
-              setUppersCase(false);
-            } else {
-              setUppersCase(true);
-            }
-            setCountClicks(0);
-            addInputValues('');
-          }
-          break;
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
+        }
+        break;
+    }
   };
 
   const inputTwoValues = (first, second) => {
+    setCountCharacters(countCharacters + 1);
     setCountClicks(countClicks + 1);
-    if (countClicks === 3) {
-      setCountClicks(1);
+    if (countCharacters >= 3) {
+      setCountCharacters(0);
     }
-    const timer = setTimeout(() => {
-      switch (countClicks) {
-        case 0:
-          {
-            addInputValues(first);
-            setCountClicks(0);
-          }
-          break;
-        case 1:
-          {
-            setCountClicks(0);
-            addInputValues(second);
-          }
-          break;
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
+    switch (countCharacters) {
+      case 0:
+        addInputValues(first);
+        break;
+      case 1:
+        addInputValues(second);
+        break;
+    }
   };
 
-  const oneBackspace = (value) => {
+  const deleteCharacter = () => {
+    addInputValues('');
     setCountClicks(countClicks + 1);
-    if (countClicks === 3) {
-      setCountClicks(1);
-    }
-    const timer = setTimeout(() => {
-      switch (countClicks) {
-        case 0:
-          {
-            addInputValues('');
-            setCountClicks(0);
-          }
-          break;
-        case 1:
-          {
-            addInputValues(value);
-            setCountClicks(0);
-          }
-          break;
-      }
-    }, 500);
-    return () => clearTimeout(timer);
   };
 
   return (
@@ -157,6 +157,7 @@ export default function AutoGrid() {
         Write SMS with an old phone
       </Typography>
       <TextField
+        autoFocus={true}
         id="outlined-full-width"
         label="SMS text"
         helperText="Nokia 9000"
@@ -176,9 +177,9 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => oneBackspace('1')}
+                onClick={() => setFinalInputValue('1')}
               >
-                1 ⌫
+                1
               </Button>
             </Paper>
           </Grid>
@@ -188,7 +189,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => addOneOfFourValues('a', 'b', 'c', '2')}
+                onClick={() => addClickedValues('a', 'b', 'c', '2')}
               >
                 2 a b c
               </Button>
@@ -200,7 +201,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => addOneOfFourValues('d', 'e', 'f', '3')}
+                onClick={() => addClickedValues('d', 'e', 'f', '3')}
               >
                 3 d e f
               </Button>
@@ -214,7 +215,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => addOneOfFourValues('g', 'h', 'i', '4')}
+                onClick={() => addClickedValues('g', 'h', 'i', '4')}
               >
                 4 g h i
               </Button>
@@ -226,7 +227,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => addOneOfFourValues('j', 'k', 'l', '5')}
+                onClick={() => addClickedValues('j', 'k', 'l', '5')}
               >
                 5 j k l
               </Button>
@@ -238,7 +239,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => addOneOfFourValues('m', 'n', 'o', '6')}
+                onClick={() => addClickedValues('m', 'n', 'o', '6')}
               >
                 6 m n o
               </Button>
@@ -252,7 +253,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => addOneOfFourValues('p', 'q', 'r', 's', '7')}
+                onClick={() => addClickedValues('p', 'q', 'r', 's', '7')}
               >
                 7 p q r s
               </Button>
@@ -264,7 +265,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => addOneOfFourValues('t', 'u', 'v', '8')}
+                onClick={() => addClickedValues('t', 'u', 'v', '8')}
               >
                 8 t u v
               </Button>
@@ -276,7 +277,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => addOneOfFourValues('w', 'x', 'y', 'z', '9')}
+                onClick={() => addClickedValues('w', 'x', 'y', 'z', '9')}
               >
                 9 w x y z
               </Button>
@@ -302,7 +303,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => inputTwoValues('0', ' ')}
+                onClick={() => inputTwoValues(' ', '0')}
               >
                 0 ⌴
               </Button>
@@ -314,9 +315,23 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color={`${upperCase ? 'secondary' : 'primary'}`}
-                onClick={() => hashShift('#')}
+                onClick={() => hashtagAndShift('#')}
               >
                 # ⇧
+              </Button>
+            </Paper>
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs>
+            <Paper className={classes.paper}>
+              <Button
+                style={{ textTransform: 'lowercase', minWidth: '90px' }}
+                variant="contained"
+                color="default"
+                onClick={() => deleteCharacter()}
+              >
+                ⌫
               </Button>
             </Paper>
           </Grid>
