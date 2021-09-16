@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Container,
@@ -8,10 +8,6 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
-// show character instantly
-// selected character while entering
-// make space first
-//
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,17 +26,26 @@ export default function AutoGrid() {
   const [countClicks, setCountClicks] = useState(0);
   const [upperCase, setUppersCase] = useState(false);
   const [countCharacters, setCountCharacters] = useState(0);
-  const [previousValue, setPreviousValue] = useState('');
   let inputValueLength = 0;
   let tempInputValue = '';
   let selectedCharacter = '';
 
+  const isInitialMount = useRef(true);
+  const previousValue = useRef('');
+  const hashtagClicks = useRef(0);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log('This will run after 1 second! countClicks: ' + countClicks);
-      setFinalInputValue();
-    }, 2000);
-    return () => clearTimeout(timer);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      const timer = setTimeout(() => {
+        console.log(
+          'This will run after 1 second! countClicks: ' + countClicks
+        );
+        setFinalInputValue();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
   }, [countClicks]);
 
   const isLetter = (str) => {
@@ -70,78 +75,74 @@ export default function AutoGrid() {
     }
   };
 
-  const setFinalInputValue = (value) => {
-    if (value) {
-      selectedCharacter = value;
-    }
+  const setFinalInputValue = () => {
     setInputValue(inputValue + selectedCharacter);
     inputValueLength = inputValue.length;
   };
-  // setState explore
-  // to know exactly when value is set
-  // do action when state is set
+
+  const addNumberOne = (value) => {
+    setCountClicks(countClicks + 1);
+    addInputValues(value);
+  };
+
   const addClickedValues = (...values) => {
+    let resetCountCharacters = false;
     setCountCharacters(countCharacters + 1);
     setCountClicks(countClicks + 1);
-    if (countCharacters > values.length - 2 || previousValue !== values[0]) {
-      setCountCharacters(0);
+    if (
+      countCharacters > values.length ||
+      previousValue.current !== values[0]
+    ) {
+      setCountCharacters(1);
+      resetCountCharacters = true;
     }
-    setPreviousValue(values[0]);
-    switch (countCharacters) {
-      case 0:
+    previousValue.current = values[0];
+
+    let count = countCharacters;
+    if (resetCountCharacters) {
+      count = 1;
+    }
+
+    switch (count) {
+      case 1:
         addInputValues(values[0]);
         break;
-      case 1:
+      case 2:
         addInputValues(values[1]);
         break;
-      case 2:
+      case 3:
         addInputValues(values[2]);
         break;
-      case 3:
+      case 4:
         addInputValues(values[3]);
         break;
-      case 4:
+      case 5:
         addInputValues(values[4]);
         break;
     }
   };
 
   const hashtagAndShift = (hashtag) => {
-    setCountCharacters(countCharacters + 1);
+    hashtagClicks.current++;
     setCountClicks(countClicks + 1);
-    if (countCharacters >= 3) {
-      setCountCharacters(1);
+    if (hashtagClicks.current === 3) {
+      hashtagClicks.current = 1;
     }
-    switch (countCharacters) {
-      case 0:
+    switch (hashtagClicks.current) {
+      case 1:
         {
           addInputValues(hashtag);
         }
         break;
-      case 1:
+      case 2:
         {
           if (upperCase) {
             setUppersCase(false);
           } else {
             setUppersCase(true);
           }
+          hashtagClicks.current = 0;
         }
-        break;
-    }
-  };
-
-  const inputTwoValues = (first, second) => {
-    setCountCharacters(countCharacters + 1);
-    setCountClicks(countClicks + 1);
-    if (countCharacters >= 3) {
-      setCountCharacters(0);
-    }
-    switch (countCharacters) {
-      case 0:
-        addInputValues(first);
-        break;
-      case 1:
-        addInputValues(second);
         break;
     }
   };
@@ -177,7 +178,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => setFinalInputValue('1')}
+                onClick={() => addNumberOne('1')}
               >
                 1
               </Button>
@@ -291,7 +292,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => inputTwoValues('*', '+')}
+                onClick={() => addClickedValues('*', '+')}
               >
                 * +
               </Button>
@@ -303,7 +304,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color="primary"
-                onClick={() => inputTwoValues(' ', '0')}
+                onClick={() => addClickedValues(' ', '0')}
               >
                 0 ⌴
               </Button>
