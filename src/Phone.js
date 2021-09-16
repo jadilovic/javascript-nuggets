@@ -33,6 +33,7 @@ export default function AutoGrid() {
   const isInitialMount = useRef(true);
   const previousValue = useRef('');
   const hashtagClicks = useRef(0);
+  const finalizedInput = useRef(false);
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -78,6 +79,7 @@ export default function AutoGrid() {
   const setFinalInputValue = () => {
     setInputValue(inputValue + selectedCharacter);
     inputValueLength = inputValue.length;
+    finalizedInput.current = true;
   };
 
   const addNumberOne = (value) => {
@@ -99,8 +101,9 @@ export default function AutoGrid() {
     previousValue.current = values[0];
 
     let count = countCharacters;
-    if (resetCountCharacters) {
+    if (resetCountCharacters || finalizedInput.current) {
       count = 1;
+      finalizedInput.current = false;
     }
 
     switch (count) {
