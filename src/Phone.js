@@ -20,52 +20,58 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AutoGrid() {
+export default function Phone() {
   const classes = useStyles();
   const [inputValue, setInputValue] = useState('');
   const [countClicks, setCountClicks] = useState(0);
   const [upperCase, setUppersCase] = useState(false);
-  const [countCharacters, setCountCharacters] = useState(0);
+  let timer = null;
   let inputValueLength = 0;
   let tempInputValue = '';
   let selectedCharacter = '';
 
   const isInitialMount = useRef(true);
-  const previousValue = useRef('');
-  const hashtagClicks = useRef(0);
+  const previousButton = useRef('');
   const finalizedInput = useRef(false);
+  const countCharacters = useRef(0);
 
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         console.log(
           'This will run after 1 second! countClicks: ' + countClicks
         );
         setFinalInputValue();
       }, 1000);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        console.log('timer out');
+      };
     }
   }, [countClicks]);
 
-  const isLetter = (str) => {
-    return str.length === 1 && str.match(/[a-z]/i);
+  const isLetter = (character) => {
+    return character.length === 1 && character.match(/[a-z]/i);
   };
 
-  const addInputValues = (value) => {
-    selectedCharacter = value;
-    if (upperCase && isLetter(value)) {
-      selectedCharacter = value.toUpperCase();
+  const addInputValues = (character) => {
+    selectedCharacter = character;
+    if (upperCase && isLetter(character)) {
+      selectedCharacter = character.toUpperCase();
     }
-    if (value === '') {
+    if (character === '') {
       const newInputValueAfterDeletingOneCharacter = inputValue.substring(
         0,
         inputValue.length - 1
       );
       setInputValue(newInputValueAfterDeletingOneCharacter);
     } else {
-      if (inputValue.length === inputValueLength) {
+      if (
+        inputValue.length === inputValueLength ||
+        inputValue[inputValue.length - 1] === '1'
+      ) {
         setInputValue(inputValue + selectedCharacter);
         console.log('first add');
       } else {
@@ -82,71 +88,63 @@ export default function AutoGrid() {
     finalizedInput.current = true;
   };
 
-  const addNumberOne = (value) => {
-    setCountClicks(countClicks + 1);
-    addInputValues(value);
+  // ADD NUMBER ONE CHARACTER
+  const addNumberOne = (character) => {
+    addInputValues(character);
+    setFinalInputValue();
   };
 
-  const addClickedValues = (...values) => {
-    let resetCountCharacters = false;
-    setCountCharacters(countCharacters + 1);
+  // ADD VALUES FROM BUTTONS WITH TWO OR MORE CHARACTERS
+  const addClickedValues = (...characterValues) => {
     setCountClicks(countClicks + 1);
-    if (
-      countCharacters > values.length ||
-      previousValue.current !== values[0]
-    ) {
-      setCountCharacters(1);
-      resetCountCharacters = true;
-    }
-    previousValue.current = values[0];
+    countCharacters.current++;
 
-    let count = countCharacters;
-    if (resetCountCharacters || finalizedInput.current) {
-      count = 1;
+    if (countCharacters.current > characterValues.length) {
+      countCharacters.current = 1;
+    }
+
+    if (previousButton.current !== characterValues[0]) {
+      countCharacters.current = 1;
+      clearTimeout(timer);
+      setFinalInputValue();
+    }
+
+    previousButton.current = characterValues[0];
+
+    if (finalizedInput.current) {
+      countCharacters.current = 1;
       finalizedInput.current = false;
     }
 
-    switch (count) {
-      case 1:
-        addInputValues(values[0]);
-        break;
-      case 2:
-        addInputValues(values[1]);
-        break;
-      case 3:
-        addInputValues(values[2]);
-        break;
-      case 4:
-        addInputValues(values[3]);
-        break;
-      case 5:
-        addInputValues(values[4]);
-        break;
+    if (characterValues[1] === 'shift' && countCharacters.current === 2) {
+      deleteCharacter();
+      toggleShift();
+    } else {
+      switch (countCharacters.current) {
+        case 1:
+          addInputValues(characterValues[0]);
+          break;
+        case 2:
+          addInputValues(characterValues[1]);
+          break;
+        case 3:
+          addInputValues(characterValues[2]);
+          break;
+        case 4:
+          addInputValues(characterValues[3]);
+          break;
+        case 5:
+          addInputValues(characterValues[4]);
+          break;
+      }
     }
   };
 
-  const hashtagAndShift = (hashtag) => {
-    hashtagClicks.current++;
-    setCountClicks(countClicks + 1);
-    if (hashtagClicks.current === 3) {
-      hashtagClicks.current = 1;
-    }
-    switch (hashtagClicks.current) {
-      case 1:
-        {
-          addInputValues(hashtag);
-        }
-        break;
-      case 2:
-        {
-          if (upperCase) {
-            setUppersCase(false);
-          } else {
-            setUppersCase(true);
-          }
-          hashtagClicks.current = 0;
-        }
-        break;
+  const toggleShift = () => {
+    if (upperCase) {
+      setUppersCase(false);
+    } else {
+      setUppersCase(true);
     }
   };
 
@@ -319,7 +317,7 @@ export default function AutoGrid() {
                 style={{ textTransform: 'lowercase', minWidth: '90px' }}
                 variant="contained"
                 color={`${upperCase ? 'secondary' : 'primary'}`}
-                onClick={() => hashtagAndShift('#')}
+                onClick={() => addClickedValues('#', 'shift')}
               >
                 # ⇧
               </Button>
