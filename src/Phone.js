@@ -25,6 +25,7 @@ export default function Phone() {
   const [inputValue, setInputValue] = useState('');
   const [countClicks, setCountClicks] = useState(0);
   const [upperCase, setUppersCase] = useState(false);
+
   let timer = null;
   let inputValueLength = 0;
   let tempInputValue = '';
@@ -56,6 +57,7 @@ export default function Phone() {
     return character.length === 1 && character.match(/[a-z]/i);
   };
 
+  // TEMPORARY ADDING CHARACTER TO THE INPUT VALUE IN THE TEXT FIELD
   const addInputValues = (character) => {
     selectedCharacter = character;
     if (upperCase && isLetter(character)) {

@@ -12,6 +12,9 @@ import RestOperator from './RestOperator';
 import OptionalChaining from './OptionalChaining';
 import Promises from './Promises';
 import Phone from './Phone';
+import AsyncAwait from './AsyncAwait';
+import Fetch from './Fetch';
+
 /*
 import ArrayFrom from './ArrayFrom';
 import CallbackFunction from './CallbackFunction';
@@ -72,6 +75,12 @@ const NuggetsMenu = () => {
         <MenuItem onClick={handleClose}>
           <Link to="/phone">Phone</Link>
         </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/async-await">Async / Await</Link>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/fetch">Fetch</Link>
+        </MenuItem>
       </Menu>
       <Route exact path="/">
         <Home />
@@ -105,6 +114,12 @@ const NuggetsMenu = () => {
       </Route>
       <Route path="/phone">
         <Phone />
+      </Route>
+      <Route path="/async-await">
+        <AsyncAwait />
+      </Route>
+      <Route path="/fetch">
+        <Fetch />
       </Route>
     </Router>
   );

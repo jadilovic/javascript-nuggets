@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 // consume/use promises
 
 // Pending, Rejected, FulFilled
-
+/*
 const num = 2;
 
 const promise = new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ const promise = new Promise((resolve, reject) => {
 });
 
 promise.then((data) => console.log(data)).catch((error) => console.log(error));
-
+*/
 function Promises() {
   const classes = useStyles();
 
