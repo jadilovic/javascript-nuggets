@@ -48,7 +48,6 @@ export default function Phone() {
       }, 1000);
       return () => {
         clearTimeout(timer);
-        console.log('timer out');
       };
     }
   }, [countClicks]);
@@ -84,6 +83,8 @@ export default function Phone() {
     }
   };
 
+  // FINAL STEP IN ADDING NEW CHARACTER IN THE TEXT FIELD AFTER SETTIMEOUT RUNS OUT
+  // OR SWITCHING TO NEW BUTTON IS CLICKED
   const setFinalInputValue = () => {
     setInputValue(inputValue + selectedCharacter);
     inputValueLength = inputValue.length;
@@ -101,23 +102,29 @@ export default function Phone() {
     setCountClicks(countClicks + 1);
     countCharacters.current++;
 
+    // RESTART COUNTING IF TOTAL NUMBER OF CHARACTERS IN THE BUTTON REACHED
     if (countCharacters.current > characterValues.length) {
       countCharacters.current = 1;
     }
 
+    // RESTART COUNTING IF NEW BUTTON CLICKED
     if (previousButton.current !== characterValues[0]) {
       countCharacters.current = 1;
       clearTimeout(timer);
       setFinalInputValue();
     }
 
+    // ASSIGN VALUE OF THE CURRENT BUTTON TO BE CHECKED AS THE PREVIOUS BUTTON AFTER THE NEXT CLICK
     previousButton.current = characterValues[0];
 
+    // RESTART COUNTING AFTER INPUT IS FINALIZED
     if (finalizedInput.current) {
       countCharacters.current = 1;
       finalizedInput.current = false;
     }
 
+    // FIRST CHECK IF BUTTON IS SHIFT BUTTON
+    // IF NOT ADD INPUT VALUES BASED ON COUNTING CHARACTERS IN THE BUTTON
     if (characterValues[1] === 'shift' && countCharacters.current === 2) {
       deleteCharacter();
       toggleShift();
@@ -142,6 +149,7 @@ export default function Phone() {
     }
   };
 
+  // CHANGING SHIFT
   const toggleShift = () => {
     if (upperCase) {
       setUppersCase(false);
@@ -150,6 +158,7 @@ export default function Phone() {
     }
   };
 
+  // REMOVING LAST CHARACTER FROM THE INPUT VALUE AND TEXT FIELD
   const deleteCharacter = () => {
     addInputValues('');
     setCountClicks(countClicks + 1);
