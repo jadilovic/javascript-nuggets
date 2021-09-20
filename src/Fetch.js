@@ -74,18 +74,27 @@ const AsyncAwait = () => {
     });
 */
   const database = async () => {
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    setArticlesList(data);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        const msg = `Error status is: ${response.status} and error message: ${response.statusText}`;
+        throw new Error(msg);
+      }
+      const data = await response.json();
+      console.log(data);
+      setArticlesList(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  /*
   useEffect(() => {
     database();
   }, []);
-
+*/
   //  Javascript Nuggets
-  // Fetch Errors
+  // Fetch Errors above shown
   // Only throws an error if cannot resolve.
   // Error Response still a response (400-500)
 
@@ -95,6 +104,13 @@ const AsyncAwait = () => {
       .then((data) => console.log(data))
       .catch((error) => console.log(error));
   };
+
+  console.log('height', window.innerHeight);
+  console.log('width', window.innerWidth);
+
+  const box = document.querySelector('.box');
+  const dimensions = box.getBoundingClientRect();
+  console.log(dimensions);
 
   return (
     <div className={classes.root}>
@@ -111,7 +127,18 @@ const AsyncAwait = () => {
               variant="contained"
               color="primary"
             >
-              Fetch Tours data in console
+              Fetch Tours data in Console
+            </Button>
+          </Paper>
+        </Grid>
+        <Grid item xs={6}>
+          <Paper className={classes.paper}>
+            <Button
+              onClick={() => database()}
+              variant="contained"
+              color="primary"
+            >
+              Fetch Tours data and display in React Component
             </Button>
           </Paper>
         </Grid>
@@ -121,8 +148,8 @@ const AsyncAwait = () => {
         {articlesList.map((article, index) => {
           return (
             <Grid key={index} item xs={6}>
-              <Paper className={classes.paper}>{article.name}</Paper>;
-              <Paper className={classes.paper}>{article.info}</Paper>;
+              <Paper className={classes.paper}>{article.name}</Paper>
+              <Paper className={classes.paper}>{article.info}</Paper>
             </Grid>
           );
         })}

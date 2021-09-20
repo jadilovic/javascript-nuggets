@@ -52,7 +52,15 @@ export default function Phone() {
     }
   }, [countClicks]);
 
+  // RETURNS ARRAY CONTAINING ALL OF THE MATCHES IF character IS A LETTER OR null IF IT IS NOT
   const isLetter = (character) => {
+    // regEx SAMPLE EXPLORE
+    /*
+Regular expressions are patterns used to match character combinations in strings. 
+In JavaScript, regular expressions are also objects. 
+These patterns are used with the exec() and test() methods of RegExp, 
+and with the match(), matchAll(), replace(), replaceAll(), search(), and split() methods of String.
+    */
     return character.length === 1 && character.match(/[a-z]/i);
   };
 
